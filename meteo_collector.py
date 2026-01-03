@@ -150,7 +150,8 @@ def collecter_meteo_journaliere():
     
     print(f"📅 Récupération des données pour le {hier}")
     
-    donnees = recuperer_donnees_meteo_recentes(hier, hier)
+    # Utiliser l'API Archive pour les données d'hier
+    donnees = recuperer_donnees_meteo_historique(hier, hier)
     
     if donnees:
         if sauvegarder_dans_supabase(donnees):
