@@ -1,0 +1,34 @@
+name: Collecte Météo Quotidienne
+
+on:
+  schedule:
+    # Tous les jours à 6h00 UTC (7h FR en hiver, 8h en été)
+    - cron: '0 6 * * *'
+  workflow_dispatch:  # Permet de lancer manuellement
+
+jobs:
+  collecte:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Récupération du code
+      uses: actions/checkout@v3
+    
+    - name: Configuration Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.10'
+    
+    - name: Installation des dépendances
+      run: |
+        pip install -r requirements.txt
+    
+    - name: Collecte des données météo
+      env:
+        SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+        SUPABASE_KEY: ${{ secrets.SUPABASE_KEY }}
+        LATITUDE: ${{ secrets.LATITUDE }}
+        LONGITUDE: ${{ secrets.LONGITUDE }}
+        VILLE: ${{ secrets.VILLE }}
+      run: |
+        python -c "from meteo_collector import collecter_meteo_journaliere; collecter_meteo_journaliere()"
